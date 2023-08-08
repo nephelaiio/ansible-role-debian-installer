@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: debian_installer
+  author: nephelaiio
+  description: An Ansible role to create Debian auto install images
+  license: MIT
+  min_ansible_version: "2.2"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+  galaxy_tags:
+    - debian
+    - installer
+
+dependencies: []

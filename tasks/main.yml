@@ -1,0 +1,121 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ debian_installer_packages }}"
+    state: "{{ debian_installer_package_state }}"
+
+- name: Create temporary target directory
+  ansible.builtin.tempfile:
+    state: directory
+    prefix: iso
+  register: tmpdir_dest
+
+- name: Create target ISO directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ debian_installer_target_dir }}"
+
+- name: Fetch source ISO
+  ansible.builtin.get_url:
+    url: "{{ debian_installer_image_url }}"
+    dest: "{{ debian_installer_iso_path }}"
+
+- name: Extract ISO contents
+  ansible.builtin.command: "7z -y x {{ debian_installer_iso_path }} -o{{ tmpdir_dest.path }}"
+  tags:  skip_ansible_lint
+
+- name: Remove Debian source ISO
+  ansible.builtin.file:
+    path: "{{ debian_installer_iso_path }}"
+    state: absent
+
+- name: Set interface prefix
+  ansible.builtin.set_fact:
+    debian_installer_interface_prefix: "{{ debian_installer_interface_ip | ipaddr('prefix') }}"
+  vars:
+    debian_installer_interface_ip: "{{ debian_installer_interface.ipaddress }}/{{ debian_installer_interface.netmask }}"
+  when: debian_installer_interface.static | bool
+
+- name: Remove BOOT folder
+  ansible.builtin.file:
+    path: "{{ tmpdir_dest.path }}/[BOOT]"
+    state: absent
+
+- name: Create preseed file
+  ansible.builtin.template:
+    src: debian.seed.j2
+    dest: "{{ tmpdir_dest.path }}/{{ debian_installer_seed_file }}"
+  vars:
+    _hostname: "{{ debian_installer_hostname.split('.') | first }}"
+    _host_domain: "{{ debian_installer_hostname.split('.') }}"
+    _domain: "{{ (_host_domain | length > 1) | ternary(_host_domain[1:] | join('.'), 'localdomain') }}"
+    _username: "{{ debian_installer_username }}"
+    _password: "{{ debian_installer_password }}"
+    _ssh_keys: "{{ [debian_installer_sshkey] | flatten }}"
+    _interface: "{{ debian_installer_interface }}"
+    _disk: "{{ debian_installer_disk | default('') }}"
+    _mirror: "{{ debian_installer_mirror }}"
+    _security_mirror: "{{ debian_installer_security_mirror }}"
+    _partman_method: "{{ debian_installer_partman_method }}"
+    _packages: "{{ debian_installer_packages }}"
+
+- name: Retrieve seed file checksum
+  ansible.builtin.command: "md5sum {{ tmpdir_dest.path }}/{{ debian_installer_seed_file }}"
+  register: seed_md5sum
+  changed_when: false
+
+- name: Compute isolinux file locations
+  ansible.builtin.set_fact:
+    vmlinuz_path: "/install.amd/vmlinuz"
+    initrd_path: "/install.amd/initrd.gz"
+
+- name: Find isolinux configuration files
+  ansible.builtin.find:
+    paths: "{{ tmpdir_dest.path }}/isolinux"
+    patterns: "*.cfg"
+    file_type: file
+    recurse: false
+  register: _isolinux_config
+
+- name: Update isolinux boot configurations
+  ansible.builtin.lineinfile:
+    path: "{{ item.0 }}"
+    regexp: "{{ item.1 }}"
+    state: absent
+  vars:
+    _isolinux_paths: "{{ _isolinux_config.files | map(attribute='path') }}"
+    _isolinux_regexes:
+      - '^default'
+      - '^timeout'
+      - '^ontimeout'
+      - '^menu autoboot'
+  loop: "{{ _isolinux_paths | product(_isolinux_regexes) | list }}"
+
+- name: Update text install boot configuration
+  ansible.builtin.template:
+    src: isolinux.j2
+    dest: "{{ tmpdir_dest.path }}/isolinux/txt.cfg"
+  vars:
+    kernel_file: "{{ vmlinuz_path }}"
+    initrd_file: "{{ initrd_path }}"
+    preseed_file: "{{ debian_installer_seed_file }}"
+    preseed_checksum: "{{ seed_md5sum.stdout.split(' ') | first }}"
+
+- name: Create isolinux autoinstall iso
+  ansible.builtin.command: |
+    xorriso -as mkisofs
+      -ldots -allow-multidot -d -r -l -J -no-emul-boot -boot-load-size 4 -boot-info-table
+      -V 'debian'
+      -b isolinux/isolinux.bin
+      -c isolinux/boot.cat
+      -o {{ target_filename }} .
+  args:
+    chdir: "{{ tmpdir_dest.path }}"
+  vars:
+    target_filename: "{{ debian_installer_target_dir }}/{{ debian_installer_target_filename }}"
+  changed_when: false
+  tags: skip_ansible_lint
+
+- name: Make iso bootable
+  ansible.builtin.command: "isohybrid {{ debian_installer_target_dir }}/{{ debian_installer_hostname }}.iso"
+  changed_when: false

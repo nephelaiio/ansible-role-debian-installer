@@ -1,0 +1,6 @@
+default auto
+label auto
+  menu label ^Auto Install Ubuntu Server
+  menu default
+  kernel {{ kernel_file }}
+  append auto=true priority=high preseed/file=/cdrom/{{ preseed_file }} preseed/file/checksum={{ preseed_checksum }} vga=788 initrd={{ initrd_file }} quiet ---

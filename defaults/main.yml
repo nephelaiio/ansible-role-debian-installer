@@ -1,0 +1,29 @@
+---
+# debian_installer_username:  # required
+# debian_installer_password:  # required
+# debian_installer_sshkey:  # required
+#
+debian_installer_late_command: ''  # override seed file late command
+debian_installer_disk: ''  # override seed file disk autodetection
+debian_installer_packages:
+  - syslinux
+  - syslinux-utils
+  - openssh-client
+  - genisoimage
+  - xorriso
+  - p7zip-full
+debian_installer_package_state: present
+debian_installer_target_dir: "/tmp"
+debian_installer_target_filename: "{{ debian_installer_hostname }}.iso"
+debian_installer_hostname: guest.nephelai.io
+debian_installer_interface:  # override seed file network autoconfiguration
+  static: false
+debian_installer_interface_name: eno1  # should probably be overriden
+debian_installer_poweroff: false
+debian_installer_mirror: deb.debian.org
+debian_installer_image_packages: []
+debian_installer_security_mirror: security.debian.org
+debian_installer_image_url: https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.1.0-amd64-DVD-1.iso
+debian_installer_iso_path: "{{ debian_installer_target_dir }}/{{ debian_installer_hostname }}.orig.iso"
+debian_installer_partman_method: lvm  # [(lvm)|(regular)]
+debian_installer_seed_file: debian.seed

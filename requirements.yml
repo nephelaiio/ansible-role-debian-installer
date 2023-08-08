@@ -1,0 +1,6 @@
+---
+roles:
+  - nephelaiio.plugins
+  - nephelaiio.pip
+collections:
+  - ansible.posix

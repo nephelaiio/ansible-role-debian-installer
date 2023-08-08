@@ -1,0 +1,18 @@
+
+fileignoreconfig:
+- filename: poetry.lock
+  ignore_detectors: [filecontent]
+- filename: molecule/default/converge.yml
+  ignore_detectors: [filecontent]
+- filename: molecule/default/molecule.yml
+  ignore_detectors: [filecontent]
+- filename: molecule/default/verify.yml
+  ignore_detectors: [filecontent]
+- filename: molecule/default/templates/vm.xml.j2
+  ignore_detectors: [filecontent]
+- filename: templates/debian.seed.j2
+  ignore_detectors: [filecontent]
+- filename: tasks/main.yml
+  ignore_detectors: [filecontent]
+- filename: defaults/main.yml
+  ignore_detectors: [filecontent]

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "nephelaiio-debian-installer"
+version = "6.2.5"
+description = ""
+authors = ["Ted Cook <teodoro.cook@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+ansible = "^8.2.0"
+netaddr = "^0.8.0"
+ansible-lint = { version = "*", markers = "platform_system != 'Windows'" }
+libvirt-python = "^9.5.0"
+molecule = "^5.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

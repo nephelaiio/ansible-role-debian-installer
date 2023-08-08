@@ -1,0 +1,111 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: ${MOLECULE_PROJECT_DIRECTORY}//requirements.yml
+    requirements-file: ${MOLECULE_PROJECT_DIRECTORY}/requirements.yml
+driver:
+  name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: local
+platforms:
+  - name: installer
+provisioner:
+  name: ansible
+  log: true
+  env:
+    ANSIBLE_VERBOSITY: ${MOLECULE_VERBOSITY:-0}
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callbacks_enabled: ansible.posix.profile_tasks
+      callback_whitelist: profile_tasks, timer, yaml
+      host_key_checking: false
+  inventory:
+    hosts:
+      all:
+        vars:
+          molecule_distro: "{{ lookup('env', 'MOLECULE_DISTRO', default='bookworm') }}"
+          molecule_iso: "{{ lookup('env', 'MOLECULE_ISO', default='https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.1.0-amd64-DVD-1.iso') }}"
+          molecule_debug: "{{ lookup('env', 'GITHUB_ACTIONS', default='false') | bool }}"
+          cache_dir: "/tmp/{{ molecule_distro }}"
+          output_dir: "{{ lookup('env', 'MOLECULE_OUTPUT_DIR', default='/tmp/logs') }}"
+
+          molecule_net: "{{ lookup('env', 'MOLECULE_NET', default='192.168.255.0/24') }}"
+          bridge_net: "{{ molecule_net | ansible.utils.ipv4('network/prefix') }}"
+          bridge_host: "{{ bridge_net | ansible.utils.nthhost(1) }}"
+          bridge_prefix: "{{ bridge_net | ansible.utils.ipaddr('prefix') }}"
+          bridge_name: "{{ molecule_distro }}br0"
+          bridge_iface: "{{ molecule_distro }}0"
+
+          kvm_keypair: "{{ cache_dir }}/kvm_key"
+
+          iso_installer:
+            dest: "file://{{ cache_dir }}/debian-latest.iso"
+            url: "{{ molecule_iso }}"
+
+          guests:
+
+            - installer_hostname: "{{ molecule_distro }}-lvm-10g"
+              installer_disk_size: "{{ 10*(1024**3) }}"
+              installer_interface:
+                static: true
+                ipaddress: "{{ bridge_net | ansible.utils.nthhost(2) }}"
+                network: "{{ bridge_net | ansible.utils.ipaddr('network') }}"
+                netmask: "{{ bridge_net | ansible.utils.ipaddr('netmask') }}"
+                gateway: "{{ bridge_host }}"
+                nameservers:
+                  - 1.1.1.1
+                  - 8.8.8.8
+              installer_partitioning_method: lvm
+
+            - installer_hostname: "{{ molecule_distro }}-static-10g"
+              installer_disk_size: "{{ 10*(1024**3) }}"
+              installer_interface:
+                static: true
+                ipaddress: "{{ bridge_net | ansible.utils.nthhost(3) }}"
+                network: "{{ bridge_net | ansible.utils.ipaddr('network') }}"
+                netmask: "{{ bridge_net | ansible.utils.ipaddr('netmask') }}"
+                gateway: "{{ bridge_host }}"
+                nameservers:
+                  - 1.1.1.1
+                  - 8.8.8.8
+              installer_partitioning_method: regular
+
+            - installer_hostname: "{{ molecule_distro }}-lvm-50g"
+              installer_disk_size: "{{ 50*(1024**3) }}"
+              installer_interface:
+                static: true
+                ipaddress: "{{ bridge_net | ansible.utils.nthhost(4) }}"
+                network: "{{ bridge_net | ansible.utils.ipaddr('network') }}"
+                netmask: "{{ bridge_net | ansible.utils.ipaddr('netmask') }}"
+                gateway: "{{ bridge_host }}"
+                nameservers:
+                  - 1.1.1.1
+                  - 8.8.8.8
+              installer_partitioning_method: lvm
+
+            - installer_hostname: "{{ molecule_distro }}-static-50g"
+              installer_disk_size: "{{ 50*(1024**3) }}"
+              installer_interface:
+                static: true
+                ipaddress: "{{ bridge_net | ansible.utils.nthhost(5) }}"
+                network: "{{ bridge_net | ansible.utils.ipaddr('network') }}"
+                netmask: "{{ bridge_net | ansible.utils.ipaddr('netmask') }}"
+                gateway: "{{ bridge_host }}"
+                nameservers:
+                  - 1.1.1.1
+                  - 8.8.8.8
+              installer_partitioning_method: regular
+
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - prepare
+    - converge
+    - verify
+    - cleanup
