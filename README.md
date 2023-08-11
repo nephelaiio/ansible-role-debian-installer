@@ -1,6 +1,6 @@
 # nephelaiio.debian-installer
 
-[![Build Status](https://github.com/nephelaiio/ansible-role-debian-installer/workflows/CI/badge.svg)](https://github.com/nephelaiio/ansible-role-debian-installer/actions)
+[![Build Status](https://github.com/nephelaiio/ansible-role-debian-installer/workflows/molecule/badge.svg)](https://github.com/nephelaiio/ansible-role-debian-installer/actions)
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.debian-installer-blue.svg)](https://galaxy.ansible.com/nephelaiio/debian-installer/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/debian-installer) to generate unattended installation isos for Debian Linux.
@@ -24,14 +24,12 @@ The following example will create an unattended iso for deploying vm.nephelai.io
       ipaddress: 10.40.0.22
       netmask: 255.255.255.0
       gateway: 10.40.0.254
-      nameservers: 8.8.8.8 8.8.4.8.8.8.8 8.8.4.4
+      nameservers: 8.8.8.8 8.8.4.4
 ```
 
 Images are tested by provisioning kvm guests on github actions large runners
 
 ## Testing
-
-Please make sure your environment has [docker](https://www.docker.com) installed in order to run role validation tests. Additional python dependencies are listed in the [requirements file](/requirements.txt)
 
 Role is tested from an Ansible controller running Ubuntu LTS. Target iso flavors are:
   * Debian 12
