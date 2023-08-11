@@ -11,7 +11,7 @@ Please refer to the [defaults file](/defaults/main.yml) for a full list of input
 
 ## Example Playbook
 
-The following example will create an unattended iso for deploying vm.nephelai.io with Debian Bookwork (Debian 12) pulled from cdimage.debian.org (default)
+The following example will create an unattended iso for deploying vm.nephelai.io with Debian Bookwork (Debian 12) pulled from cdimage.debian.org (default) using online install method
 
 ```
 - hosts: localhost
