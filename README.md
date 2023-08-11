@@ -20,11 +20,24 @@ The following example will create an unattended iso for deploying vm.nephelai.io
   vars:
     debian_installer_hostname: vm.nephelai.io
     debian_installer_interface:
-      static: true
+      static: false
       ipaddress: 10.40.0.22
       netmask: 255.255.255.0
       gateway: 10.40.0.254
       nameservers: 8.8.8.8 8.8.4.4
+```
+
+The following example creates an unattended offline install iso using dhcp addressing
+```
+- hosts: localhost
+  roles:
+     - role: nephelaiio.debian_installer
+  vars:
+    debian_installer_hostname: vm.nephelai.io
+    debian_installer_mirror: ''
+    debian_installer_security_mirror: ''
+    debian_installer_interface:
+      static: false
 ```
 
 Images are tested by provisioning kvm guests on github actions large runners
