@@ -76,7 +76,7 @@
         - name: Wait for guest
           ansible.builtin.wait_for_connection:
             sleep: 10
-            timeout: 1800
+            timeout: 900
 
         - name: Gather facts
           ansible.builtin.setup:
