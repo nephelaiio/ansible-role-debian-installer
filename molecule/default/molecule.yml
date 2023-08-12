@@ -42,6 +42,9 @@ provisioner:
 
           kvm_keypair: "{{ cache_dir }}/kvm_key"
 
+          debian_installer_mirror: ''
+          debian_installer_security_mirror: ''
+
           iso_installer:
             dest: "file://{{ cache_dir }}/debian-latest.iso"
             url: "{{ molecule_iso }}"
