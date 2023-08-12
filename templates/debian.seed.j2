@@ -34,7 +34,7 @@ d-i apt-setup/use_mirror                                    boolean     true
 d-i mirror/http/hostname                                    string      {{ _mirror }}
 {% else %}
 d-i apt-setup/use_mirror                                    boolean     false
-{% end %}
+{% endif %}
 d-i mirror/country                                          string      manual
 d-i mirror/http/directory                                   string      /debian
 d-i mirror/http/proxy                                       string
@@ -64,7 +64,7 @@ d-i apt-setup/services-select                               multiselect security
 d-i apt-setup/security_host                                 string      {{ _security_mirror }}
 {% else %}
 d-i apt-setup/services-select                               multiselect updates
-{% end %}
+{% endif %}
 
 # configure packages
 popularity-contest popularity-contest/participate           boolean     false
