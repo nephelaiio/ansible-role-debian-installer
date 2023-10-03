@@ -1,6 +1,6 @@
 # nephelaiio.debian-installer
 
-[![Build Status](https://github.com/nephelaiio/ansible-role-debian-installer/workflows/molecule/badge.svg)](https://github.com/nephelaiio/ansible-role-debian-installer/actions)
+[![Build Status](https://github.com/nephelaiio/ansible-role-debian-installer/actions/workflows/molecule.yml/badge.svg)](https://github.com/nephelaiio/ansible-role-debian-installer/workflows/actions/workflows/molecule.yml)
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.debian-installer-blue.svg)](https://galaxy.ansible.com/nephelaiio/debian-installer/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/debian-installer) to generate unattended installation isos for Debian Linux.
