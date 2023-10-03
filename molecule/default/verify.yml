@@ -86,7 +86,9 @@
           become: true
 
         - name: Gather partition info
-          ansible.builtin.shell: "lsblk -l | grep /$"
+          ansible.builtin.shell:
+            cmd: "set -o pipefail && lsblk -l | grep /$"
+            executable: /bin/bash
           register: lsblk_output
 
         - name: Check static partitioning
