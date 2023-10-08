@@ -58,6 +58,7 @@
     _security_mirror: "{{ debian_installer_security_mirror }}"
     _partman_method: "{{ debian_installer_partman_method }}"
     _packages: "{{ debian_installer_packages }}"
+    _include: "{{ debian_installer_preseed_include }}"
 
 - name: Retrieve seed file checksum
   ansible.builtin.command: "md5sum {{ tmpdir_dest.path }}/{{ debian_installer_seed_file }}"
