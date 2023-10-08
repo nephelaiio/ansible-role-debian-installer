@@ -102,6 +102,8 @@ provisioner:
                   - 1.1.1.1
                   - 8.8.8.8
               installer_partitioning_method: regular
+              installer_preseed_include: |
+                d-i partman-basicfilesystems/no_swap boolean false
 
 verifier:
   name: ansible
