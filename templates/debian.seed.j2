@@ -37,7 +37,9 @@ d-i apt-setup/cdrom/set-first                               boolean     false
 {% else %}
 d-i apt-setup/use_mirror                                    boolean     false
 d-i apt-setup/disable-cdrom-entries                         boolean     false
-d-i apt-setup/cdrom/set-first                               boolean     true
+d-i apt-setup/cdrom/set-first                               boolean     false
+d-i apt-setup/cdrom/set-next                                boolean     false
+d-i apt-setup/cdrom/set-failed                              boolean     false
 {% endif %}
 d-i mirror/country                                          string      manual
 d-i mirror/http/directory                                   string      /debian
