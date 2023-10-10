@@ -94,10 +94,10 @@ d-i partman-basicfilesystems/no_swap                        boolean     false
 {% if _partman_method == 'lvm' %}
 d-i partman-auto/expert_recipe string \
   boot-swap-root :: \
-    512 10 512 ext3 \
+    512 10 512 ext4 \
         $primary{ } $bootable{ } \
         method{ format } format{ } \
-        use_filesystem{ } filesystem{ ext3 } \
+        use_filesystem{ } filesystem{ ext4 } \
         mountpoint{ /boot } \
         . \
     4000 20 4000 linux-swap \
@@ -117,7 +117,7 @@ d-i partman-auto/expert_recipe string \
 {% elif _partman_method == 'regular' %}
 d-i partman-auto/expert_recipe string \
   boot-swap-root :: \
-    512 10 512 ext3 \
+    512 10 512 ext4 \
         $primary{ } $bootable{ } \
         method{ format } format{ } \
         use_filesystem{ } filesystem{ ext4 } \
