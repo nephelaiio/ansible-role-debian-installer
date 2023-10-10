@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: make install
 
+      - name: Disable firewall
+        run: sudo ufw disable
+
       - name: Debug test environment
         run: make debug
 

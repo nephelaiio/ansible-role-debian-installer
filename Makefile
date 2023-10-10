@@ -40,3 +40,4 @@ version:
 
 debug: version
 	@poetry export --dev --without-hashes
+	sudo ufw status
