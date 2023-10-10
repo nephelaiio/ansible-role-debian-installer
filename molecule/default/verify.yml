@@ -61,6 +61,17 @@
 
   gather_facts: false
 
+  vars:
+
+    device_name: vda
+    partition_boot: vda1
+    partition_swap: vda2
+    partition_root: vda3
+    device_partitions:
+      - "{{ partition_boot }}"
+      - "{{ partition_swap }}"
+      - "{{ partition_root }}"
+
   tasks:
 
     - name: Debug connection parameters
@@ -99,6 +110,33 @@
             - lsblk_output.stdout is not search("part") or
               lsblk_output.stdout is search("lvm")
 
+        - name: Verify root device
+          ansible.builtin.fail:
+            msg: "unable to find {{ device_name }} device"
+          when: device_name not in ansible_devices
+
+        - name: Verify boot partition
+          ansible.builtin.fail:
+            msg: "unable to find {{ partition_boot }} partition"
+          when: partition_boot not in ansible_devices[device_name].partitions
+
+        - name: Verify swap partition
+          ansible.builtin.fail:
+            msg: "unable to find {{ partition_swap }} partition"
+          when: partition_swap not in ansible_devices[device_name].partitions
+
+        - name: Verify root partition
+          ansible.builtin.fail:
+            msg: "unable to find {{ partition_root }} partition"
+          when: partition_swap not in ansible_devices[device_name].partitions
+
+        - name: Verify bogus partitions
+          ansible.builtin.fail:
+            msg: "found unexpected partitions [{{ _extra | jon(', ') }}]"
+          vars:
+            _extra: "{{ ansible_devices[device_name].partitions | difference(device_partitions) }}"
+          when: _extra | length > 0
+
         - name: Check lvm partitioning
           when: partitioning_method == 'lvm'
           block:
@@ -122,7 +160,7 @@
           vars:
             installer_root_device: "{{ ansible_mounts | selectattr('mount', 'equalto', '/') | list | first }}"
             installer_root_size: "{{ installer_root_device.size_total }}"
-            installer_root_threshold: "{{ (0.80 * (disk_size | int)) | int }}"
+            installer_root_threshold: "{{ (0.50 * (disk_size | int)) | int }}"
           when: (installer_root_size | int) < (installer_root_threshold | int)
 
       always:

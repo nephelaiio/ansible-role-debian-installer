@@ -90,6 +90,50 @@ d-i partman/choose_partition                                select      finish
 d-i partman/confirm_nooverwrite                             boolean     true
 d-i partman/confirm                                         boolean     true
 d-i partman-auto/method                                     string      {{ _partman_method }}
+d-i partman-basicfilesystems/no_swap                        boolean     false
+{% if _partman_method == 'lvm' %}
+d-i partman-auto/expert_recipe string \
+  boot-swap-root :: \
+    512 10 512 ext3 \
+        $primary{ } $bootable{ } \
+        method{ format } format{ } \
+        use_filesystem{ } filesystem{ ext3 } \
+        mountpoint{ /boot } \
+        . \
+    4000 20 4000 linux-swap \
+        $primary{ } \
+        method{ swap } format{ } \
+        . \
+    1000 50 1000000000 lvm \
+        $primary{ } \
+        method{ lvm } \
+        . \
+    1000 50 1000000000 ext4 \
+        $lvmok{ } \
+        method{ format } format{ } \
+        use_filesystem{ } filesystem{ ext4 } \
+        mountpoint{ / } \
+        .
+{% elif _partman_method == 'regular' %}
+d-i partman-auto/expert_recipe string \
+  boot-swap-root :: \
+    512 10 512 ext3 \
+        $primary{ } $bootable{ } \
+        method{ format } format{ } \
+        use_filesystem{ } filesystem{ ext4 } \
+        mountpoint{ /boot } \
+        . \
+    4000 20 4000 linux-swap \
+        $primary{ } \
+        method{ swap } format{ } \
+        . \
+    1000 50 1000000000 ext4 \
+        $primary{ } \
+        method{ format } format{ } \
+        use_filesystem{ } filesystem{ ext4 } \
+        mountpoint{ / } \
+        .
+{% endif %}
 d-i partman-auto/choose_recipe                              select      atomic
 d-i partman-auto/purge_lvm_from_device                      boolean     true
 d-i partman-lvm/device_remove_lvm                           boolean     true
