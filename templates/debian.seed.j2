@@ -32,8 +32,12 @@ d-i hw-detect/load_firmware boolean true
 {% if _mirror != '' %}
 d-i apt-setup/use_mirror                                    boolean     true
 d-i mirror/http/hostname                                    string      {{ _mirror }}
+d-i apt-setup/disable-cdrom-entries                         boolean     true
+d-i apt-setup/cdrom/set-first                               boolean     false
 {% else %}
 d-i apt-setup/use_mirror                                    boolean     false
+d-i apt-setup/disable-cdrom-entries                         boolean     false
+d-i apt-setup/cdrom/set-first                               boolean     true
 {% endif %}
 d-i mirror/country                                          string      manual
 d-i mirror/http/directory                                   string      /debian
@@ -55,8 +59,6 @@ d-i passwd/user-default-groups                              string      adm cdro
 d-i user-setup/encrypt-home                                 boolean     false
 
 # configure apt
-d-i apt-setup/disable-cdrom-entries                         boolean     true
-d-i apt-setup/cdrom/set-first                               boolean     false
 d-i apt-setup/non-free                                      boolean     true
 d-i apt-setup/contrib                                       boolean     true
 {% if _security_mirror != '' %}
