@@ -23,7 +23,7 @@ debian_installer_poweroff: false
 debian_installer_mirror: deb.debian.org
 debian_installer_image_packages: []
 debian_installer_security_mirror: security.debian.org
-debian_installer_image_url: http://mirrorservice.org/sites/cdimage.debian.org/debian-cd/12.2.0/amd64/iso-dvd/debian-12.2.0-amd64-DVD-1.iso
+debian_installer_image_url: https://mirror.us.leaseweb.net/debian-cd/current/amd64/iso-dvd/debian-12.4.0-amd64-DVD-1.iso
 debian_installer_iso_path: "{{ debian_installer_target_dir }}/{{ debian_installer_hostname }}.orig.iso"
 debian_installer_partman_method: lvm  # [(lvm)|(regular)]
 debian_installer_seed_file: debian.seed
