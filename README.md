@@ -47,7 +47,7 @@ Images are tested by provisioning kvm guests on github actions large runners
 Role is tested from an Ansible controller running Ubuntu LTS. Target iso flavors are:
   * Debian 12
 
-You can test the role directly from sources using command ` molecule test `. Note that this will reconfigure networking for network 192.168.255.0/24 which will be directly connected to a local bridge interface
+You can test the role directly from sources using command ` molecule test `. Note that this will configure networking for prefix 192.168.255.0/24 which will be directly connected to a local bridge interface
 
 ## License
 
