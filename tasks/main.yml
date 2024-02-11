@@ -14,11 +14,13 @@
   ansible.builtin.file:
     state: directory
     path: "{{ debian_installer_target_dir }}"
+    mode: 0750
 
 - name: Fetch source ISO
   ansible.builtin.get_url:
     url: "{{ debian_installer_image_url }}"
     dest: "{{ debian_installer_iso_path }}"
+    mode: 0640
 
 - name: Extract ISO contents
   ansible.builtin.command: "7z -y x {{ debian_installer_iso_path }} -o{{ tmpdir_dest.path }}"
@@ -31,7 +33,7 @@
 
 - name: Set interface prefix
   ansible.builtin.set_fact:
-    debian_installer_interface_prefix: "{{ debian_installer_interface_ip | ipaddr('prefix') }}"
+    debian_installer_interface_prefix: "{{ debian_installer_interface_ip | ansible.utils.ipaddr('prefix') }}"
   vars:
     debian_installer_interface_ip: "{{ debian_installer_interface.ipaddress }}/{{ debian_installer_interface.netmask }}"
   when: debian_installer_interface.static | bool
@@ -45,6 +47,7 @@
   ansible.builtin.template:
     src: debian.seed.j2
     dest: "{{ tmpdir_dest.path }}/{{ debian_installer_seed_file }}"
+    mode: 0640
   vars:
     _hostname: "{{ debian_installer_hostname.split('.') | first }}"
     _host_domain: "{{ debian_installer_hostname.split('.') }}"
@@ -96,6 +99,7 @@
   ansible.builtin.template:
     src: isolinux.j2
     dest: "{{ tmpdir_dest.path }}/isolinux/txt.cfg"
+    mode: 0640
   vars:
     kernel_file: "{{ vmlinuz_path }}"
     initrd_file: "{{ initrd_path }}"
