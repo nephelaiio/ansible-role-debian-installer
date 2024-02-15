@@ -14,7 +14,7 @@ DEBIAN_ISO = $$(curl -s ${DEBIAN_SHASUMS} | grep "debian-[0-9]" | awk '{print $$
 all: install version lint test
 
 test: lint
-	MOLCULE_ISO=${DEBIAN_MIRROR}/${DEBIAN_ISO} \
+	MOLECULE_ISO=${DEBIAN_MIRROR}/${DEBIAN_ISO} \
 	poetry run molecule $@ -s ${MOLECULE_SCENARIO}
 
 install:
@@ -38,7 +38,7 @@ collections:
 requirements: roles collections
 
 dependency create prepare converge idempotence side-effect verify destroy login reset:
-	MOLCULE_ISO=${DEBIAN_MIRROR}/${DEBIAN_ISO} \
+	MOLECULE_ISO=${DEBIAN_MIRROR}/${DEBIAN_ISO} \
 	MOLECULE_DOCKER_IMAGE=${MOLECULE_DOCKER_IMAGE} \
 	poetry run molecule $@ -s ${MOLECULE_SCENARIO}
 

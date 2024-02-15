@@ -1,12 +1,8 @@
 ---
 - name: Destroy KVM guests
-
   hosts: localhost
-
   become: true
-
   tasks:
-
     - name: Destroy KVM guest
       community.libvirt.virt:
         state: destroyed

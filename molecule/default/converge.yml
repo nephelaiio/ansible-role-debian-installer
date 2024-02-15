@@ -1,20 +1,14 @@
 ---
 - name: Spawn KVM guests
-
   hosts: localhost
-
   become: true
-
   pre_tasks:
-
     - name: Install disk utils
       ansible.builtin.apt:
         name:
           - parted
           - lvm2
-
   tasks:
-
     - name: Cache installer iso
       ansible.builtin.get_url:
         url: "{{ iso_installer.url }}"

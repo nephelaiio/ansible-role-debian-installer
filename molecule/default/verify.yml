@@ -1,10 +1,7 @@
 ---
 - name: Verify ISO creation
-
   hosts: localhost
-
   tasks:
-
     - name: Retrieve guest ISO status
       ansible.builtin.stat:
         path: "{{ cache_dir }}/{{ guest.installer_hostname }}.iso"
@@ -25,13 +22,9 @@
 
 
 - name: Add guests to inventory
-
   hosts: localhost
-
   become: true
-
   tasks:
-
     - name: Add guest to inventory
       ansible.builtin.add_host:
         name: "{{ guest_hostname }}"
@@ -56,13 +49,9 @@
 
 
 - name: Verify guests
-
   hosts: install
-
   gather_facts: false
-
   vars:
-
     device_name: vda
     partition_boot: vda1
     partition_swap: vda2
@@ -71,9 +60,7 @@
       - "{{ partition_boot }}"
       - "{{ partition_swap }}"
       - "{{ partition_root }}"
-
   tasks:
-
     - name: Debug connection parameters
       ansible.builtin.debug:
         msg: >
@@ -83,7 +70,6 @@
 
     - name: Wait for connection
       block:
-
         - name: Wait for guest
           ansible.builtin.wait_for_connection:
             sleep: 10
@@ -140,7 +126,6 @@
         - name: Check lvm partitioning
           when: partitioning_method == 'lvm'
           block:
-
             - name: Check lvm partitioning
               ansible.builtin.fail:
                 msg: "lvm partitioning failed: {{ lsblk_output.stdout }}"
@@ -206,7 +191,6 @@
           delegate_to: localhost
           become: true
           block:
-
             - name: Create output hostname directory
               ansible.builtin.file:
                 state: directory
