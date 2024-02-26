@@ -7,7 +7,7 @@ GITHUB_ORG = $$(echo ${GITHUB_REPOSITORY} | cut -d/ -f 1)
 GITHUB_REPO = $$(echo ${GITHUB_REPOSITORY} | cut -d/ -f 2)
 REQUIREMENTS = requirements.yml
 DEBIAN_DISTRO ?= current
-DEBIAN_SHASUMS = https://cdimage.debian.org/debian-cd/${DEBIAN_DISTRO}/amd64/iso-cd/SHA256SUMS
+DEBIAN_SHASUMS = https://mirror.cogentco.com/debian-cd/${DEBIAN_DISTRO}/amd64/iso-cd/SHA256SUMS
 DEBIAN_MIRROR = $$(dirname ${DEBIAN_SHASUMS})
 DEBIAN_ISO = $$(curl -s ${DEBIAN_SHASUMS} | grep "debian-[0-9]" | awk '{print $$2}')
 
