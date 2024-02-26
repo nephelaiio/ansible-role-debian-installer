@@ -13,7 +13,6 @@ defaults:
     working-directory: 'nephelaiio.debian_installer'
 
 jobs:
-
   molecule:
     name: molecule
     runs-on: libvirt

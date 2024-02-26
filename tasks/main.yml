@@ -33,9 +33,9 @@
 
 - name: Set interface prefix
   ansible.builtin.set_fact:
-    debian_installer_interface_prefix: "{{ debian_installer_interface_ip | ansible.utils.ipaddr('prefix') }}"
+    debian_installer_interface_prefix: "{{ _interface_ip | ansible.utils.ipaddr('prefix') }}"
   vars:
-    debian_installer_interface_ip: "{{ debian_installer_interface.ipaddress }}/{{ debian_installer_interface.netmask }}"
+    _interface_ip: "{{ debian_installer_interface.ipaddress }}/{{ debian_installer_interface.netmask }}"
   when: debian_installer_interface.static | bool
 
 - name: Remove BOOT folder
