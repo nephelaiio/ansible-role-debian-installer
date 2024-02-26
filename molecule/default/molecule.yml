@@ -34,7 +34,7 @@ provisioner:
           debian_installer_dest: "file://{{ _libvirt_path }}/debian-latest.iso"
           debian_installer_target_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
 
-          molecule_libvirt_netaddr: "{{ lookup('env', 'MOLECULE_NET', default='192.168.255.0/24') | ansible.utils.ipv4('network/prefix') }}"
+          molecule_libvirt_netaddr: "{{ lookup('env', 'MOLECULE_NET', default='192.168.245.0/24') | ansible.utils.ipv4('network/prefix') }}"
           molecule_libvirt_netsize: "{{ molecule_libvirt_netaddr | ansible.utils.ipaddr('prefix') }}"
           molecule_libvirt_address: "{{ molecule_libvirt_netaddr | ansible.utils.nthhost(1) }}/{{ molecule_libvirt_netsize }}"
           molecule_libvirt_network: "molecule"
