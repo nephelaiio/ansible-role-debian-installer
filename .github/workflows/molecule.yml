@@ -1,5 +1,5 @@
 ---
-name: Molecule
+name: molecule
 
 on:
   pull_request:
@@ -17,13 +17,6 @@ jobs:
   molecule:
     name: molecule
     runs-on: libvirt
-    strategy:
-      matrix:
-        include:
-          - distro: 'bookworm'
-            url: 'https://mirror.us.leaseweb.net/debian-cd/current/amd64/iso-dvd/debian-12.4.0-amd64-DVD-1.iso'
-            net: '192.168.255.0/24'
-
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v3
@@ -55,9 +48,6 @@ jobs:
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          MOLECULE_DISTRO: ${{ matrix.distro }}
-          MOLECULE_ISO: ${{ matrix.url }}
-          MOLECULE_NET: ${{ matrix.net }}
           MOLECULE_OUTPUT_DIR: "/tmp/logs"
 
       - name: Upload install logs

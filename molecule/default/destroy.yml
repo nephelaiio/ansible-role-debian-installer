@@ -1,12 +1,8 @@
 ---
 - name: Destroy KVM guests
-
   hosts: localhost
-
   become: true
-
   tasks:
-
     - name: Destroy KVM guest
       community.libvirt.virt:
         state: destroyed
@@ -14,7 +10,7 @@
       loop_control:
         loop_var: guest
         label: "{{ guest.installer_hostname }}"
-      loop: "{{ guests }}"
+      loop: "{{ molecule_kvm_guests }}"
       failed_when: false
 
     - name: Undefine KVM guest
@@ -24,7 +20,7 @@
       loop_control:
         loop_var: guest
         label: "{{ guest.installer_hostname }}"
-      loop: "{{ guests }}"
+      loop: "{{ molecule_kvm_guests }}"
       failed_when: false
 
     - name: Destroy KVM guest disks
@@ -32,20 +28,38 @@
         path: "{{ guest_disk }}"
         state: absent
       vars:
-        guest_disk: "{{ cache_dir }}/{{ guest.installer_hostname }}.img"
+        guest_disk: "{{ molecule_libvirt_path }}/{{ guest.installer_hostname }}.img"
       loop_control:
         loop_var: guest
         label: "{{ guest.installer_hostname }}"
-      loop: "{{ guests }}"
+      loop: "{{ molecule_kvm_guests }}"
 
-    - name: Destroy dummy bridge
-      ansible.builtin.command: "nmcli con del {{ bridge_name }}"
+
+- name: Destroy libvirt network and storage
+  hosts: localhost
+  become: true
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Stop libvirt network
+      community.libvirt.virt_net:
+        command: destroy
+        name: "{{ _libvirt_network }}"
+      when: _libvirt_network != "default"
       failed_when: false
 
-    - name: Destroy dummy interface
-      ansible.builtin.command: "ip link del {{ bridge_iface }}"
-      failed_when: false
+    - name: Delete libvirt network
+      community.libvirt.virt_net:
+        command: undefine
+        name: "{{ _libvirt_network }}"
+      when: _libvirt_network != "default"
 
-    - name: Destroy dummy bridge
-      ansible.builtin.command: "ip link del {{ bridge_name }} type bridge"
-      failed_when: false
+    - name: Undefine libvirt pool
+      community.libvirt.virt_pool:
+        state: undefined
+        name: "{{ _libvirt_pool }}"
+
+    - name: Destroy libvirt pool
+      ansible.builtin.file:
+        path: "{{ _libvirt_pool }}"
+        state: absent

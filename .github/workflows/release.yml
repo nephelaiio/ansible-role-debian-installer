@@ -1,5 +1,5 @@
 ---
-name: Release
+name: release
 
 on:
   push:
@@ -12,7 +12,7 @@ defaults:
 
 jobs:
   release:
-    name: Release
+    name: release
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase
