@@ -1,7 +1,6 @@
  .PHONY: all ${MAKECMDGOALS}
 
 MOLECULE_SCENARIO ?= default
-MOLECULE_DOCKER_IMAGE ?= ubuntu2004
 GALAXY_API_KEY ?=
 GITHUB_REPOSITORY ?= $$(git config --get remote.origin.url | cut -d: -f 2 | cut -d. -f 1)
 GITHUB_ORG = $$(echo ${GITHUB_REPOSITORY} | cut -d/ -f 1)
@@ -39,7 +38,6 @@ requirements: roles collections
 
 dependency create prepare converge idempotence side-effect verify destroy login reset:
 	MOLECULE_ISO=${DEBIAN_MIRROR}/${DEBIAN_ISO} \
-	MOLECULE_DOCKER_IMAGE=${MOLECULE_DOCKER_IMAGE} \
 	poetry run molecule $@ -s ${MOLECULE_SCENARIO}
 
 ignore:
