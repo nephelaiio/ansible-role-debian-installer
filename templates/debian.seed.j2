@@ -72,11 +72,11 @@ d-i apt-setup/services-select                               multiselect updates
 
 # configure packages
 popularity-contest popularity-contest/participate           boolean     false
-tasksel tasksel/first                                       multiselect ssh-server
+tasksel tasksel/first                                       multiselect manual
 d-i pkgsel/upgrade                                          select      safe-upgrade
 d-i pkgsel/update-policy                                    select      none
 d-i pkgsel/updatedb                                         boolean     true
-d-i pkgsel/include                                          string      python3
+d-i pkgsel/include                                          string      python3 openssh-server openssh-client
 
 # disk partitioning
 {% if _disk != '' %}
