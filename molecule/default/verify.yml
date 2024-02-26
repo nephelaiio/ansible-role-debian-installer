@@ -146,7 +146,6 @@
           when: (installer_root_size | int) < (installer_root_threshold | int)
 
       always:
-
         - name: Set debug facts
           ansible.builtin.set_fact:
             debug_disk: "{{ disk_location }}.debug"
